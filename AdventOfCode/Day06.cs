@@ -10,7 +10,7 @@ public class Day06 : BaseDay
 
     public Day06()
     {
-        _input = File.ReadAllText(InputFilePath);      
+        _input = File.ReadAllText(InputFilePath);  
     }
 
     public override ValueTask<string> Solve_1()

@@ -42,8 +42,8 @@ public class Day09 : BaseDay
             'L' => knots[0] with { x = knots[0].x - 1 },
             'U' => knots[0] with { y = knots[0].y + 1 },
             'D' => knots[0] with { y = knots[0].y - 1 },
-            _ => throw new ArgumentException($"{direction} {steps}")
-        };
+            _ => throw new System.Diagnostics.UnreachableException($"{direction} {steps}")
+        }; ;
         MoveTail();
     }
 

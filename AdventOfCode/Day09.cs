@@ -1,10 +1,11 @@
-﻿namespace AdventOfCode;
+﻿using System.Security.Cryptography.X509Certificates;
+
+namespace AdventOfCode;
 
 public class Day09 : BaseDay
 {
     private readonly (char direction, int steps)[] _input;
-    private List<(int y, int x)> T = new List<(int y, int x)> {(0,0) };
-    private (int y, int x) H = (0, 0);
+    List<(int y, int x)> knots = new List<(int y, int x)> {(0,0), (0, 0) };
     HashSet<(int y, int x)> visited = new HashSet<(int, int)> { (0, 0) };
 
     public Day09()
@@ -14,83 +15,51 @@ public class Day09 : BaseDay
 
     public override ValueTask<string> Solve_1()
     {
-        /*foreach(var move in _input)
-        {
-            MoveHead(move.direction, move.steps);
-        }*/
+        RunMovements();
 
         return new(visited.Count.ToString());
     }
 
     public override ValueTask<string> Solve_2()
     {
-        T = new List<(int y, int x)> { (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0) };
-        H = (0, 0);
+        knots = new List<(int y, int x)> { (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0) };
         visited.Clear();
-
-        foreach (var move in _input)
-        {
-            MoveHead(move.direction, move.steps);
-        }
+        RunMovements();
 
         return new(visited.Count.ToString());
     }
 
-    private void MoveHead(char direction, int steps)
+    private void RunMovements()
     {
-        if(steps == 0) return;
-
-        switch(direction)
-        {
-            case 'R':
-                H.x++;
-                MoveTail(0, 1, 0);
-                break;
-            case 'L':
-                H.x--;
-                MoveTail(0, -1, 0);
-                break;
-            case 'U':
-                H.y++;
-                MoveTail(1, 0, 0);
-                break;
-            case 'D':
-                H.y--;
-                MoveTail(-1, 0, 0);
-                break;
-        }
-        Console.Write("H: " + H);
-        for(int i = 0; i < T.Count; i++)
-        {
-            Console.Write($" {i+1}: {T[i]}");
-        }
-        Console.WriteLine($" visited: {visited.Count}");
-        MoveHead(direction, steps - 1);
+        foreach (var move in _input)
+            for (var i = 0; i < move.steps; i++)
+                MoveHead(move.direction, move.steps);
     }
 
-    private bool NeedToMove(int y, int x, (int y, int x) k) => (Math.Abs(k.y - y) > 1 || Math.Abs(k.x - x) > 1);
-
-    private void MoveTail(int y, int x, int knotIndex)
+    private void MoveHead(char direction, int steps)
     {
-        if(knotIndex == T.Count) return;
-        if(H.x == 5 && H.y == 2)
+        knots[0] = direction switch
         {
-            int a = 2;
+            'R' => knots[0] with { x = knots[0].x + 1 },
+            'L' => knots[0] with { x = knots[0].x - 1 },
+            'U' => knots[0] with { y = knots[0].y + 1 },
+            'D' => knots[0] with { y = knots[0].y - 1 },
+            _ => throw new ArgumentException($"{direction} {steps}")
+        };
+        MoveTail();
+    }
+
+    private void MoveTail()
+    {
+        for (var i = 1; i < knots.Count; i++)
+        {
+            var dy = knots[i - 1].y - knots[i].y;
+            var dx = knots[i - 1].x - knots[i].x;
+
+            if (Math.Abs(dy) > 1 || Math.Abs(dx) > 1)
+                knots[i] = (knots[i].y + Math.Sign(dy), knots[i].x + Math.Sign(dx));                
         }
 
-        if (!NeedToMove(T[knotIndex].y, T[knotIndex].x, knotIndex == 0 ? H : T[knotIndex - 1])) return;
-        var t = T[knotIndex];
-        int oldX = t.x, oldY = t.y;
-        t.x = x == 0 ? H.x : t.x + x;
-        t.y = y == 0 ? H.y : t.y + y;
-        T[knotIndex] = t;
-
-        if (knotIndex == T.Count - 1)
-        {
-            visited.Add(T[T.Count - 1]);
-        }
-
-        if (knotIndex != T.Count-1)
-            MoveTail(t.y - oldY, t.x - oldX, knotIndex + 1);       
+        visited.Add(knots[knots.Count-1]);
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-
-namespace AdventOfCode;
+﻿namespace AdventOfCode;
 
 public class Day09 : BaseDay
 {

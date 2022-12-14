@@ -76,9 +76,7 @@ public class Day14 : BaseDay
     private void ParseRockLine(Point[] points)
     {
         for(int i = 0; i < points.Length-1; i++)
-        {
             CreateRockLine(points[i], points[i+1]);
-        }
     }
 
     private void CreateRockLine(Point from, Point to)

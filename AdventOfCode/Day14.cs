@@ -1,6 +1,4 @@
-﻿using Spectre.Console.Rendering;
-
-namespace AdventOfCode;
+﻿namespace AdventOfCode;
 
 public class Day14 : BaseDay
 {

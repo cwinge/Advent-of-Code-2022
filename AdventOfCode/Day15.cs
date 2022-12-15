@@ -3,13 +3,9 @@
 public class Day15 : BaseDay
 {
     SensorBeacon[] pairs;
+
     record struct SensorBeacon(int xSensor, int ySensor, int xBeacon, int yBeacon, int distance);
-    record struct PointDistance(int x, int y, int xDistance);
-    record struct PointRange(PointDistance point)
-    {
-        public int minY = point.y - point.xDistance;
-        public int maxY = point.y + point.xDistance;
-    }
+
     public Day15()
     {
         pairs = File.ReadAllLines(InputFilePath).Select(s => new string(s.Where(x => char.IsNumber(x) || x == ',' || x == ':').ToArray()))

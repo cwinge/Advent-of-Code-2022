@@ -1,9 +1,8 @@
-﻿using System.Drawing;
-
-namespace AdventOfCode;
+﻿namespace AdventOfCode;
 
 public class Day18 : BaseDay
 {
+    HashSet<Cube> cubes;
     record struct Cube(int x, int y, int z)
     {
         public IEnumerable<Cube> Neighbors => new[]
@@ -17,7 +16,6 @@ public class Day18 : BaseDay
         };
     }
 
-    HashSet<Cube> cubes;
     public Day18()
     {
         cubes = File.ReadAllLines(InputFilePath).Select(x => x.Split(",")).Select(x => new Cube(int.Parse(x.ElementAt(0)), int.Parse(x.ElementAt(1)), int.Parse(x.ElementAt(2)))).ToHashSet();
@@ -43,7 +41,7 @@ public class Day18 : BaseDay
         var queue = new Queue<Cube>();
 
         queue.Enqueue(from);
-        result.Add(from);        
+        result.Add(from);
         while (queue.Any())
         {
             var water = queue.Dequeue();
@@ -52,7 +50,7 @@ public class Day18 : BaseDay
                 if (!result.Contains(neighbour) && !cubes.Contains(neighbour) && Inside(min, max, neighbour))
                 {
                     queue.Enqueue(neighbour);
-                    result.Add(neighbour);                    
+                    result.Add(neighbour);
                 }
             }
         }

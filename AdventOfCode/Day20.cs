@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace AdventOfCode;
 
@@ -22,9 +23,9 @@ public class Day20 : BaseDay
     }
 
     public override ValueTask<string> Solve_2()
-    {
-        input.ForEach(x => x.Value *= 811589153);
+    {        
         decrypt = new ObservableCollection<TrackableLong>(input);
+        input.ForEach(x => x.Value *= 811589153);
         Enumerable.Range(0, 10).ToList().ForEach(x => Decrypt());
         var indexOf0 = decrypt.IndexOf(input.FirstOrDefault(x => x.Value == 0));
 

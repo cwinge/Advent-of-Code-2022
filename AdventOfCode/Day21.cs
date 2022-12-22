@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Numerics;
 
 namespace AdventOfCode;
 
@@ -11,11 +12,9 @@ public class Day21 : BaseDay
     record Monkey(string Name, long? num, char? Op, (string first, string second)? Pair) { public long? Num { get; set; } = num; };
     public Day21()
     {
-        monkeys = GetMonkeys();
-    }
-
-    List<Monkey> GetMonkeys() => File.ReadAllLines(InputFilePath).Select(x => x.Split(" "))
+        monkeys = File.ReadAllLines(InputFilePath).Select(x => x.Split(" "))
             .Select(x => x.Length == 2 ? new Monkey(x[0][..^1], long.Parse(x[1]), null, null) : new Monkey(x[0][..^1], null, x[2][0], (x[1], x[3]))).ToList();
+    }
 
     public override ValueTask<string> Solve_1()
     {
@@ -23,9 +22,8 @@ public class Day21 : BaseDay
     }
 
     public override ValueTask<string> Solve_2()
-    {
-        
-        return new("");
+    {        
+        return new(RiddleExtended().ToString());
     }
 
     private long Riddle(List<Monkey> monkeys, Dictionary<string, long> numbers, bool partOne = false)
@@ -57,7 +55,26 @@ public class Day21 : BaseDay
                 i++;
             }
         }
+
         return partOne ? numbers["root"] : numbers[root.Pair.Value.first] - numbers[root.Pair.Value.second];
+    }
+
+    private long RiddleExtended()
+    {
+        var human = monkeys.FirstOrDefault(x => x.Name == "humn");
+        human.Num = 0;
+        while (true)
+        {
+            long diff = Riddle(new List<Monkey>(monkeys), new Dictionary<string, long>());
+            if (diff == 0)
+                break;
+            if (diff < 100)
+                human.Num++;
+            else
+                human.Num += diff / 100;
+        }
+
+        return human.Num.Value;
     }
     public long OpResult(long first, long second, char? op)
     {
